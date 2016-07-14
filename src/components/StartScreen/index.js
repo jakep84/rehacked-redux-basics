@@ -1,93 +1,25 @@
 import React, {Component} from 'react';
-import Login from '../Login';
-import * as UserService from '../../common/services/user';
-import {hashHistory} from 'react-router';
 
-export default class StartScreen extends Component {
-  constructor(props) {
-      super(props);
-
-      this.state = {
-        status: 'initial',
-        email: '',
-        password: ''
-      };
-
-      this._handleFieldChange = this._handleFieldChange.bind(this);
-      this._handleLogin = this._handleLogin.bind(this);
-  }
-
-  componentDidMount() {
-    componentHandler.upgradeDom();
-  }
-
-  componentDidUpdate() {
-    componentHandler.upgradeDom();
-  }
-
-  _handleFieldChange(field, event) {
-    let newState = Object.assign({}, this.state);
-    newState[field] = event.target.value;
-    this.setState(newState);
-  }
-
-  _handleLogin() {
-    let errors = [];
-    if (!this.state.email) {
-      errors.push('You must specify an email');
-    }
-    if (!this.state.password) {
-      errors.push('You must specify a password');
-    }
-
-    if (errors.length > 0) {
-      this._showSnackBar(errors.join('.'));
-      let newState = Object.assign({}, this.state);
-      newState.status = 'login_error';
-      this.setState(newState);
-    } else {
-      this.setState({
-        status: 'logging_in'
-      });
-
-      let self = this;
-      UserService
-        .login(this.state.email, this.state.password)
-        .then(profile => {
-          localStorage['USER_PROFILE'] = JSON.stringify(profile);
-          console.log(profile);
-
-          let newState = Object.assign({}, this.state);
-          newState.status = 'logged_in';
-          self.setState(newState);
-
-          hashHistory.push('/dashboard');
-        })
-        .catch(error => {
-          let newState = Object.assign({}, this.state);
-          newState.status = 'login_error';
-          self._showSnackBar(error.message);
-          self.setState(newState);
-        });
-    }
-  }
-
-  _showSnackBar(message) {
-    let data = {
-      message: message,
-      timeout: 2500
-    };
-    let snackbarContainer = document.querySelector('#login-snack-bar');
-    snackbarContainer.MaterialSnackbar.showSnackbar(data);
-  }
-
+export default class DashboardContent extends Component {
   render() {
     return (
-      <Login email={this.state.email}
-        password={this.state.password}
-        handleFieldChange={this._handleFieldChange}
-        handleLogin={this._handleLogin}
-        loading={this.state.status === 'logging_in'} />
+      <main className="mdl-layout__content mdl-color--grey-100">
+        <div className="mdl-grid demo-content">
+          <div className="demo-cards mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-grid mdl-grid--no-spacing">
+            <div className="demo-updates mdl-card mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--4-col-tablet mdl-cell--12-col-desktop">
+              <div className="mdl-card__title mdl-card--expand mdl-color--teal-300">
+                <h2 className="mdl-card__title-text">Dashboard</h2>
+              </div>
+              <div className="mdl-card__supporting-text mdl-color-text--grey-600">
+                This is the Dashboard route
+              </div>
+              <div className="mdl-card__actions mdl-card--border">
+                <a href="#/dashboard" className="mdl-button mdl-js-button mdl-js-ripple-effect">Read More</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
     );
   }
 }

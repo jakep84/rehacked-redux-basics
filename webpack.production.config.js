@@ -53,8 +53,11 @@ module.exports = {
   },
 
   plugins: [
-    new ExtractTextPlugin('app.css')
-  ],
+  new ExtractTextPlugin('app.css'),
+  new webpack.DefinePlugin({
+    'process.env.NODE_ENV': JSON.stringify('production')
+  })
+],
 
   // fix errors regarding missing modules
   node: {
